@@ -1,4 +1,6 @@
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
+import { request, requestMultiple } from "react-native-permissions";
+import i18n from "./i18n/i18n";
 
 const isEmail = (str: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,4 +41,5 @@ const validatePassword = (password: string): boolean => {
   // ✅ Nếu qua hết tất cả kiểm tra
   return true;
 };
+
 export { isEmail, validatePassword };

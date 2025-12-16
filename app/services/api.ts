@@ -1,13 +1,16 @@
 import axios from "axios";
 import { store } from "../redux/store"; // import store Redux trực tiếp
+import { Alert } from "react-native";
+import { navigateScreen } from "../navigation/navigation-service";
+import { SCREEN } from "../navigation/screen-types";
+import { logout } from "../redux/slice/userSlice";
+import i18n from "../utils/i18n/i18n";
+import LoaderHandler from "../lib/components/LoadingIndicator/LoaderHandler";
 
 const API_BASE_URL = "https://smart-debt-book-api.vercel.app";
 const API_BASE_URL_2 = "https://smart-debt-book-api.vercel-v2.app";
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 const apiv2 = axios.create({
   baseURL: API_BASE_URL_2,
@@ -17,51 +20,116 @@ const apiv2 = axios.create({
 });
 
 if (__DEV__) {
-  api.interceptors.request.use((request) => {
-    console.tron?.display?.({
-      name: "API Request",
-      preview: `${request.method?.toUpperCase()} ${request.url}`,
-      value: request,
-    });
-    return request;
-  });
-
-  api.interceptors.response.use(
-    (response) => {
+  const devInterceptors = (instance: any) => {
+    api.interceptors.request.use((request) => {
       console.tron?.display?.({
-        name: "API Response",
-        preview: `${response.status} ${response.config.url}`,
-        value: response,
+        name: "API Request",
+        preview: `${request.method?.toUpperCase()} ${request.url}`,
+        value: request,
       });
+      return request;
+    });
+
+    api.interceptors.response.use(
+      (response) => {
+        console.tron?.display?.({
+          name: "API Response",
+          preview: `${response.status} ${response.config.url}`,
+          value: response,
+        });
+        return response;
+      },
+      (error) => {
+        console.tron?.display?.({
+          name: "API Error",
+          preview: `${error.response?.status} ${error.config?.url}`,
+          value: error,
+        });
+        return Promise.reject(error);
+      }
+    );
+  };
+  devInterceptors(api);
+  devInterceptors(apiv2);
+}
+const attachInterceptors = (instance: any) => {
+  api.interceptors.response.use(
+    (response: any) => {
+      LoaderHandler.hideLoader();
+      if (response.status === 401) {
+        Alert.alert(
+          i18n.t("main:loi"),
+          i18n.t("main:phien_dang_nhap_het_han, vui_long_dang_nhap_lai"),
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                store.dispatch(logout());
+                navigateScreen(SCREEN.LOADING);
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+        return Promise.reject(response);
+      }
       return response;
     },
     (error) => {
-      console.tron?.display?.({
-        name: "API Error",
-        preview: `${error.response?.status} ${error.config?.url}`,
-        value: error,
-      });
+      LoaderHandler.hideLoader();
+
+      if (error.response && error.response.status === 401) {
+        Alert.alert(
+          i18n.t("main:loi"),
+          i18n.t("main:phien_dang_nhap_het_han, vui_long_dang_nhap_lai"),
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                store.dispatch(logout());
+                navigateScreen(SCREEN.LOADING);
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+
       return Promise.reject(error);
     }
   );
-}
 
-api.interceptors.request.use(
-  async (config: any) => {
-    const state = store.getState();
-    const token = state.userSlice.accessToken;
+  api.interceptors.request.use(
+    async (config: any) => {
+      // Cho phép axios không throw lỗi nếu status < 500
+      config.validateStatus = (status: number) => status < 500;
 
-    if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      };
+      // Lấy token từ Redux store
+      const state = store.getState();
+      const token = state.userSlice.accessToken;
+
+      // Gắn token vào header nếu có
+      if (token) {
+        config.headers = {
+          ...config.headers,
+          Authorization: `Bearer ${token}`,
+        };
+      }
+
+      // Hiển thị loader
+      LoaderHandler.showLoader();
+
+      return config;
+    },
+    (error) => {
+      // Ẩn loader nếu request bị lỗi
+      LoaderHandler.hideLoader();
+      return Promise.reject(error);
     }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  );
+};
+attachInterceptors(api);
+attachInterceptors(apiv2);
 
 export const authAPI = {
   checkHealth: async () => {
@@ -90,10 +158,17 @@ export const authAPI = {
 };
 
 export const _api = {
-  getMain: async (uri: string, params?: any, version = 2) => {
+  getMain: async (
+    uri: string,
+    params?: any,
+    slot = {
+      version: 2,
+      isFile: false,
+    }
+  ) => {
     console.log(uri);
     console.log(params);
-    if (version === 2) {
+    if (slot.version === 2) {
       const res = await apiv2.get(uri, { ...params });
       return res.data;
     }
@@ -101,12 +176,41 @@ export const _api = {
     return res.data;
   },
 
-  postMain: async (uri: string, params?: any, version = 2) => {
-    if (version === 2) {
-      const res = await apiv2.post(uri, params);
+  postMain: async (
+    uri: string,
+    params?: any,
+    slot = {
+      version: 2,
+      isFile: false,
+    }
+  ) => {
+    const headers = slot.isFile
+      ? { "Content-Type": "multipart/form-data" }
+      : { "Content-Type": "application/json" };
+    if (slot.version === 2) {
+      const res = await apiv2.post(uri, params, { headers });
       return res.data;
     }
-    const res = await api.post(uri, params);
+    const res = await api.post(uri, params, { headers });
+    return res.data;
+  },
+
+  putMain: async (
+    uri: string,
+    params?: any,
+    slot = {
+      version: 2,
+      isFile: false,
+    }
+  ) => {
+    const headers = slot.isFile
+      ? { "Content-Type": "multipart/form-data" }
+      : { "Content-Type": "application/json" };
+    if (slot.version === 2) {
+      const res = await apiv2.put(uri, params, { headers });
+      return res.data;
+    }
+    const res = await api.put(uri, params, { headers });
     return res.data;
   },
 };

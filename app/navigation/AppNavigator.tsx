@@ -14,6 +14,7 @@ import HomeStack from "./HomeStack";
 import LoadingScreen from "../screen/LoadingScreen";
 import DebtorStack from "./DebtorStack";
 import SettingStack from "./SettingStack";
+import BillStack from "./BillStack";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -46,6 +47,11 @@ const RootNavigation: React.FC = () => {
         <MenuBarStackNavigator.Screen
           name={SCREEN.SETTING_STACK}
           component={SettingStack}
+        />
+
+        <MenuBarStackNavigator.Screen
+          name={SCREEN.BILL_STACK}
+          component={BillStack}
         />
       </MenuBarStackNavigator.Navigator>
     );

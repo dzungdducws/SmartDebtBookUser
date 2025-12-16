@@ -1,22 +1,8 @@
 import React, { memo } from "react";
-import {
-  Animated,
-  Image,
-  ImageBackground,
-  ImageStyle,
-  SafeAreaView,
-  StyleProp,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-  Text,
-  Platform,
-} from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View, Text } from "react-native";
 
 import { scaleSizeWidth, WINDOW_WIDTH } from "../../utils/scale";
-import { CaretLeft, MagnifyingGlass, XCircle } from "phosphor-react-native";
+import { CaretLeft } from "phosphor-react-native";
 import colors from "../../utils/colors";
 import constants from "../../utils/const";
 import { goBack } from "../../navigation/navigation-service";

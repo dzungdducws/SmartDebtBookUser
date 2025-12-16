@@ -6,6 +6,8 @@ const colors = {
   error: "#EF4444",
   warning: "#F59E0B",
   info: "#3B82F6",
+  shadowOfMainColor: "#004080",
+  shadowOfMainColor2: "#bbfcf0",
 
   bubleChat: "#EAE2D0",
   primaryColor: "#118189",

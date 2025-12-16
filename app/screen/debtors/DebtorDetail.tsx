@@ -18,64 +18,24 @@ import { ModalCustom } from "../../lib/components/ModalCustom";
 import { ModalThemNguoiNo } from "./components/ModalThemNguoiNo";
 import { isEmail } from "../../utils/validate";
 
-export const DebtorHome = () => {
-  const [debtors, setDebtors] = useState<any[]>([]);
-  const [params, setParams] = useState<any>({ page: 0, limit: 10 });
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+export const DebtorDetail = () => {
   const [showModal, setShowModal] = useState(false);
-
   const [displayNameAlias, setDisplayNameAlias] = useState("");
   const [email, setEmail] = useState("");
-  const [billNames, setBillNames] = useState([{ name: "" }]);
+  const [billNames, setBillNames] = useState([""]);
   const [isValidModal, setIsValidModal] = useState(false);
-
-  const fetchDebtors = async (customParams?: any) => {
-    if (isLoading || !hasMore) return;
-
-    const currentParams = customParams || params;
-    setParams(currentParams);
-    setIsLoading(true);
-    try {
-      const data = await _api.getMain("/debtors", currentParams);
-
-      const newItems = data?.items || [];
-      setDebtors((prev) =>
-        customParams?.page === 1 ? newItems : [...prev, ...newItems]
-      );
-      setHasMore(newItems.length === customParams?.limit);
-    } catch (error) {
-      console.error("Fetch debtors error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleLoadMore = () => {
-    if (!isLoading && hasMore) {
-      fetchDebtors({
-        page: params.page + 1,
-        limit: params.limit,
-      });
-    }
-  };
-
-  const handleRefresh = () => {
-    const newParams = { page: 1, limit: 10 };
-    setIsLoading(false);
-    setHasMore(true);
-    fetchDebtors(newParams);
-  };
 
   const handleSendData = async () => {
     const param = {
       displayNameAlias,
       email,
-      billNames: billNames.filter((item: any) => item?.name?.trim().length > 0),
+      billNames: billNames
+        .filter((item) => item.trim().length > 0)
+        .map((item) => ({ name: item })),
     };
 
     try {
-      const response = await _api.postMain("/debtors", param);
+      const response = await _api.putMain("/debtors", param);
 
       if (response?.statusCode === 409) {
         Alert.alert(
@@ -83,7 +43,6 @@ export const DebtorHome = () => {
           i18n.t("main:email_da_ton_tai_vui_long_thay_doi_email")
         );
       } else {
-        handleRefresh();
         setShowModal(false);
       }
     } catch (error) {
@@ -93,7 +52,7 @@ export const DebtorHome = () => {
   };
 
   const handleValidateBillNames = () => {
-    return billNames.some((item: any) => item?.name?.length > 0);
+    return billNames.some((item) => item.length > 0);
   };
 
   useEffect(() => {
@@ -155,51 +114,6 @@ export const DebtorHome = () => {
           disabled={!isValidModal}
         />
       )}
-      <FlatList
-        data={debtors}
-        renderItem={({ item }) => <ItemDebtor item={item} />}
-        keyExtractor={(item) => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          gap: scaleSizeHeight(10),
-          padding: scaleSizeWidth(10),
-          paddingBottom: scaleSizeHeight(20),
-        }}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.3}
-        ListEmptyComponent={
-          isLoading ? (
-            <ActivityIndicator
-              size="small"
-              color={colors.mainColor}
-              animating={false}
-            />
-          ) : (
-            <Text>{i18n.t("main:khong_co_nguoi_no")}</Text>
-          )
-        }
-        ListFooterComponent={
-          isLoading ? (
-            <ActivityIndicator
-              size="small"
-              color={colors.mainColor}
-              style={{ marginVertical: scaleSizeHeight(10) }}
-            />
-          ) : !hasMore && debtors.length ? (
-            <View style={{ alignItems: "center", padding: 10 }}>
-              <ActivityIndicator
-                size="small"
-                color={colors.mainColor}
-                animating={false}
-              />
-              <Text style={{ color: colors.grayTextColor }}>
-                {i18n.t("main:da_tai_het_du_lieu")}
-              </Text>
-            </View>
-          ) : null
-        }
-      />
     </View>
   );
 };

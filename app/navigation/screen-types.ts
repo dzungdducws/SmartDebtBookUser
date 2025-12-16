@@ -16,6 +16,10 @@ export enum SCREEN {
 
   SETTING_STACK = "SETTING_STACK",
   SETTING_HOME = "SETTING_HOME",
+  
+  BILL_STACK = "BILL_STACK",
+  BILL_HOME = "BILL_HOME",
+  BILL_DETAIL = "BILL_DETAIL",
 }
 
 export type RootStackParamList = {
@@ -34,6 +38,10 @@ export type RootStackParamList = {
 
   [SCREEN.SETTING_STACK]: any;
   [SCREEN.SETTING_HOME]: any;
+  
+  [SCREEN.BILL_STACK]: any;
+  [SCREEN.BILL_HOME]: any;
+  [SCREEN.BILL_DETAIL]: any;
 };
 
 export type _RouteProps = {
