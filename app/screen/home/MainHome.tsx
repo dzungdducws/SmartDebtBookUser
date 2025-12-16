@@ -11,7 +11,7 @@ import GradientText from "../../lib/components/GradientText";
 import constants from "../../utils/const";
 import colors from "../../utils/colors";
 import { scaleSizeHeight, scaleSizeWidth } from "../../utils/scale";
-import { images } from "../../utils/imgaes";
+import { images } from "../../utils/images";
 import { useEffect, useRef, useState } from "react";
 import { _api } from "../../services/api";
 import { ItemCard } from "./components/ItemCard";
@@ -28,7 +28,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { FloatBtn } from "./components/FloatBtn";
 import { SCREEN } from "../../navigation/screen-types";
 import { navigateScreen } from "../../navigation/navigation-service";
-import { ItemDebtor } from "../Debtors/components/ItemDebtor";
+import { ItemDebtor } from "../debtors/components/ItemDebtor";
 const MainHome = () => {
   const [netOutstanding, setNetOutstanding] = useState<any>(0);
   const [totalLoaned, setTotalLoaned] = useState<any>(0);

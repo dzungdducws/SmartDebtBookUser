@@ -70,7 +70,7 @@ export const DebtorHome = () => {
     billNames.forEach((item) => {
       if (item.trim().length > 0) return true;
     });
-    return false;   
+    return false;
   };
 
   return (

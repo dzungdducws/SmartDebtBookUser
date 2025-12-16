@@ -1,8 +1,10 @@
-import { Camera, List, PlusCircle, X } from "phosphor-react-native";
+import { Camera, GearSix, List, PlusCircle, X } from "phosphor-react-native";
 import { View, Animated, TouchableOpacity } from "react-native";
 import colors from "../../../utils/colors";
 import { scaleSizeWidth, scaleSizeHeight } from "../../../utils/scale";
 import { useState, useRef } from "react";
+import { SCREEN } from "../../../navigation/screen-types";
+import { navigateScreen } from "../../../navigation/navigation-service";
 
 export const FloatBtn = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -22,24 +24,27 @@ export const FloatBtn = () => {
     {
       pos: { x: 0, y: -70 },
       icon: (
-        <PlusCircle
-          size={scaleSizeWidth(40)}
-          weight="duotone"
-          color={colors.white}
-        />
-      ),
-      fn: () => {},
-    },
-    {
-      pos: { x: -70, y: 0 },
-      icon: (
         <Camera
           size={scaleSizeWidth(40)}
           weight="duotone"
           color={colors.white}
         />
       ),
+
       fn: () => {},
+    },
+    {
+      pos: { x: -70, y: 0 },
+      icon: (
+        <GearSix
+          size={scaleSizeWidth(40)}
+          weight="duotone"
+          color={colors.white}
+        />
+      ),
+      fn: () => {
+        navigateScreen(SCREEN.SETTING_STACK);
+      },
     },
     {
       pos: { x: -70, y: -70 },
@@ -77,6 +82,7 @@ export const FloatBtn = () => {
             }}
           >
             <TouchableOpacity
+              onPress={item?.fn}
               style={{
                 width: scaleSizeWidth(60),
                 height: scaleSizeWidth(60),

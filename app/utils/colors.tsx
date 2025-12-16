@@ -2,6 +2,11 @@ const colors = {
   mainColor: "#004080",
   mainColor2: "#00C49F",
 
+  success: "#10B981",
+  error: "#EF4444",
+  warning: "#F59E0B",
+  info: "#3B82F6",
+
   bubleChat: "#EAE2D0",
   primaryColor: "#118189",
   secondaryColor: "#ff8d22",

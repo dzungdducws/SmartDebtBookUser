@@ -1,9 +1,16 @@
 import axios from "axios";
 import { store } from "../redux/store"; // import store Redux trực tiếp
 
-const API_BASE_URL = "https://smart-debt-book-api.vercel.app/";
+const API_BASE_URL = "https://smart-debt-book-api.vercel.app";
+const API_BASE_URL_2 = "https://smart-debt-book-api.vercel-v2.app";
 const api = axios.create({
   baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+const apiv2 = axios.create({
+  baseURL: API_BASE_URL_2,
   headers: {
     "Content-Type": "application/json",
   },
@@ -83,12 +90,22 @@ export const authAPI = {
 };
 
 export const _api = {
-  getMain: async (uri: string, params?: any) => {
-    const res = await api.get(uri, { params });
+  getMain: async (uri: string, params?: any, version = 2) => {
+    console.log(uri);
+    console.log(params);
+    if (version === 2) {
+      const res = await apiv2.get(uri, { ...params });
+      return res.data;
+    }
+    const res = await api.get(uri, { ...params });
     return res.data;
   },
 
-  postMain: async (uri: string, params?: any) => {
+  postMain: async (uri: string, params?: any, version = 2) => {
+    if (version === 2) {
+      const res = await apiv2.post(uri, params);
+      return res.data;
+    }
     const res = await api.post(uri, params);
     return res.data;
   },

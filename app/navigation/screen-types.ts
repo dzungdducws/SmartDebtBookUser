@@ -13,12 +13,15 @@ export enum SCREEN {
   DEBTOR_STACK = "DEBTOR_STACK",
   DEBTOR_HOME = "DEBTOR_HOME",
   DEBTOR_DETAIL = "DEBTOR_DETAIL",
+
+  SETTING_STACK = "SETTING_STACK",
+  SETTING_HOME = "SETTING_HOME",
 }
 
 export type RootStackParamList = {
   [SCREEN.LOADING]: any;
   [SCREEN.MAIN_STACK]: any;
-  
+
   [SCREEN.LOGIN]: any;
   [SCREEN.REGISTER]: any;
 
@@ -28,6 +31,9 @@ export type RootStackParamList = {
   [SCREEN.DEBTOR_STACK]: any;
   [SCREEN.DEBTOR_HOME]: any;
   [SCREEN.DEBTOR_DETAIL]: any;
+
+  [SCREEN.SETTING_STACK]: any;
+  [SCREEN.SETTING_HOME]: any;
 };
 
 export type _RouteProps = {
