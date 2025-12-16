@@ -2,26 +2,21 @@ import { RouteProp } from "@react-navigation/native";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { _RouteProps, SCREEN } from "./screen-types";
 import { DebtorHome } from "../screen/Debtors/DebtorHome";
-import { DebtorDetail } from "../screen/Debtors/DebtorDetail";
+import { BillHome } from "../screen/bill/BillHome";
 
 const Stack = createSharedElementStackNavigator();
 
-const DebtorStack: React.FC<_RouteProps> = ({ route }: any) => (
+const BillStack: React.FC<_RouteProps> = ({ route }: any) => (
   <Stack.Navigator
-    initialRouteName={SCREEN.DEBTOR_HOME}
+    initialRouteName={SCREEN.BILL_HOME}
     screenOptions={{ gestureEnabled: false, headerShown: false }}
   >
     <Stack.Screen
-      name={SCREEN.DEBTOR_HOME}
-      component={DebtorHome}
-      initialParams={route.params}
-    />
-    <Stack.Screen
-      name={SCREEN.DEBTOR_DETAIL}
-      component={DebtorDetail}
+      name={SCREEN.BILL_HOME}
+      component={BillHome}
       initialParams={route.params}
     />
   </Stack.Navigator>
 );
 
-export default DebtorStack;
+export default BillStack;

@@ -13,6 +13,7 @@ import { navigationRef } from "./navigation-service";
 import HomeStack from "./HomeStack";
 import LoadingScreen from "../screen/LoadingScreen";
 import DebtorStack from "./DebtorStack";
+import BillStack from "./BillStack";
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -40,6 +41,11 @@ const RootNavigation: React.FC = () => {
         <MenuBarStackNavigator.Screen
           name={SCREEN.DEBTOR_STACK}
           component={DebtorStack}
+        />
+
+        <MenuBarStackNavigator.Screen
+          name={SCREEN.BILL_STACK}
+          component={BillStack}
         />
       </MenuBarStackNavigator.Navigator>
     );

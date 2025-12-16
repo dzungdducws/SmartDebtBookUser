@@ -60,10 +60,9 @@ const MainHome = () => {
       <ScrollView
         nestedScrollEnabled
         contentContainerStyle={{
-          paddingTop: constants.TOP_HEADER + scaleSizeHeight(24),
+          paddingVertical: constants.TOP_HEADER + scaleSizeHeight(24),
           paddingHorizontal: scaleSizeWidth(20),
           backgroundColor: colors.antiFlashWhite,
-          height: "100%",
           gap: scaleSizeHeight(20),
         }}
       >
